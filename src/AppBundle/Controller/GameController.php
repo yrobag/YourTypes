@@ -3,6 +3,8 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Game;
+use Doctrine\ORM\Tools\Pagination\Paginator;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;use Symfony\Component\HttpFoundation\Request;
@@ -17,18 +19,55 @@ class GameController extends Controller
     /**
      * Lists all game entities.
      *
-     * @Route("/")
+     * @Route("/previous/{page}", defaults={"page"=1})
      * @Method("GET")
+     * @Template(":game:previous_games.html.twig")
      */
-    public function showAllAction()
+    public function showPreviousAction($page)
     {
-        $em = $this->getDoctrine()->getManager();
+        $dql = 'SELECT g FROM AppBundle:Game g WHERE g.data < CURRENT_TIMESTAMP() ORDER BY g.data DESC';
+        $query = $this->getDoctrine()->getEntityManager()->createQuery($dql);
+        $games = new Paginator($query);
+        $totalItems = count($games);
+        $pageCount = ceil($totalItems/10);
 
-        $games = $em->getRepository('AppBundle:Game')->findAll();
+        if (!$page<=$pageCount && !is_numeric($page)){
+            $page =1;
+        }
 
-        return $this->render('game/index.html.twig', [
-            'games' => $games,
-        ]);
+        $games
+            ->getQuery()
+            ->setFirstResult(10 * ($page-1))
+            ->setMaxResults(10);
+
+        return ['games' => $games, 'page'=>['currentPage'=>$page, 'pageCount'=>$pageCount]];
+    }
+
+    /**
+     * Lists all game entities.
+     *
+     * @Route("/next/{page}", defaults={"page"=1})
+     * @Method("GET")
+     * @Template(":game:next_games.html.twig")
+     */
+    public function showNextAction($page)
+    {
+        $dql = 'SELECT g FROM AppBundle:Game g WHERE g.data > CURRENT_TIMESTAMP() ORDER BY g.data ASC';
+        $query = $this->getDoctrine()->getEntityManager()->createQuery($dql);
+        $games = new Paginator($query);
+        $totalItems = count($games);
+        $pageCount = ceil($totalItems/10);
+
+        if (!$page<=$pageCount && !is_numeric($page)){
+            $page =1;
+        }
+
+        $games
+            ->getQuery()
+            ->setFirstResult(10 * ($page-1))
+            ->setMaxResults(10);
+
+        return ['games' => $games, 'page'=>['currentPage'=>$page, 'pageCount'=>$pageCount]];
     }
 
     /**
@@ -36,6 +75,7 @@ class GameController extends Controller
      *
      * @Route("/new")
      * @Method({"GET", "POST"})
+     * @Template("game/new.html.twig")
      */
     public function newAction(Request $request)
     {
@@ -48,36 +88,19 @@ class GameController extends Controller
             $em->persist($game);
             $em->flush();
 
-            return $this->redirectToRoute('game_show', array('id' => $game->getId()));
+            return $this->redirectToRoute('app_game_shownext');
         }
 
-        return $this->render('game/new.html.twig', [
-            'game' => $game,
-            'form' => $form->createView(),
-        ]);
+        return ['game' => $game, 'form' => $form->createView()];
     }
 
-    /**
-     * Finds and displays a game entity.
-     *
-     * @Route("/{id}", name="game_show")
-     * @Method("GET")
-     */
-    public function showAction(Game $game)
-    {
-        $deleteForm = $this->createDeleteForm($game);
-
-        return $this->render('game/show.html.twig', [
-            'game' => $game,
-            'delete_form' => $deleteForm->createView(),
-        ]);
-    }
 
     /**
      * Displays a form to edit an existing game entity.
      *
      * @Route("/{id}/edit", name="game_edit")
      * @Method({"GET", "POST"})
+     * @Template("game/edit.html.twig")
      */
     public function editAction(Request $request, Game $game)
     {
@@ -88,20 +111,21 @@ class GameController extends Controller
         if ($editForm->isSubmitted() && $editForm->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('game_edit', array('id' => $game->getId()));
+            return $this->redirectToRoute('app_game_shownext');
         }
 
-        return $this->render('game/edit.html.twig', [
+        return [
             'game' => $game,
             'edit_form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
-        ]);
+        ];
     }
 
 
     /**
      * @Route("/{id}/setResult")
      * @Method({"GET", "POST"})
+     * @Template(":game:result.html.twig")
      */
     public function setResultAction(Request $request, Game $game)
     {
@@ -110,14 +134,11 @@ class GameController extends Controller
 
         if ($resultForm->isSubmitted() && $resultForm->isValid()) {
             $this->getDoctrine()->getManager()->flush();
-            $this->pointsCalculateAction();
-            return $this->redirectToRoute("app_game_showall");
+            $this->pointsCalculateAction($game);
+            return $this->redirectToRoute("app_game_showprevious");
         }
 
-        return $this->render('game/result.html.twig', [
-            'game' => $game,
-            'form' => $resultForm->createView()
-        ]);
+        return ['game' => $game, 'form' => $resultForm->createView()];
     }
 
     /**
@@ -137,7 +158,7 @@ class GameController extends Controller
             $em->flush();
         }
 
-        return $this->redirectToRoute('game_index');
+        return $this->redirectToRoute('app_game_shownext');
     }
 
     /**
@@ -157,10 +178,10 @@ class GameController extends Controller
     }
 
 
-    private function pointsCalculateAction()
+    private function pointsCalculateAction($game)
     {
         $em = $this->getDoctrine()->getManager();
-        $types = $em->getRepository('AppBundle:Type')->findAllToTable();
+        $types = $em->getRepository('AppBundle:Type')->findGameAllTypes($game);
         foreach ($types as $type) {
             $typeResult = $type->getTypePointsTeam1() - $type->getTypePointsTeam2();
             $gameResult = $type->getGame()->getPointsTeam1() - $type->getGame()->getPointsTeam2();
@@ -175,5 +196,10 @@ class GameController extends Controller
 
         }
         $em->flush($types);
+    }
+
+    private function sign($n)
+    {
+        return ($n > 0) - ($n < 0);
     }
 }

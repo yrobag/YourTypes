@@ -15,4 +15,13 @@
     {% else %}
         No games to type...
     {% endfor %}
+    {% if page.currentPage != page.pageCount and page.currentPage == 1 %}
+        <a href="{{ path('app_type_mytypes', {'page': page.currentPage+1}) }}">Next</a>
+    {% elseif page.currentPage == page.pageCount %}
+        <a href="{{ path('app_type_mytypes', {'page': page.currentPage-1}) }}">Previous</a>
+    {% elseif page.currentPage != page.pageCount and page.currentPage != 1 %}
+        <a href="{{ path('app_type_mytypes', {'page': page.currentPage-1}) }}">Previous</a>
+        <a href="{{ path('app_type_mytypes', {'page': page.currentPage+1}) }}">Next</a>
+    {% endif %}
+
 {% endblock %}

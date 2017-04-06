@@ -2,13 +2,22 @@
 
 {% block body %}
     <h1>Types list</h1>
-    {% set counter = 1 %}
+    {% set counter = offset+1 %}
     {% for key, val in users %}
 
-        {{ counter }}. <a href="{{ path('app_type_showprevioustypes', { 'username': key}) }}">{{ key }}</a> {{ val }}
+        {{ counter }}. <a href="{{ path('app_type_previoustypes', { 'username': key}) }}">{{ key }}</a> {{ val }}
         {% set counter = counter+1  %}
         <br>
     {% else %}
         No results...
     {% endfor %}
+
+    {% if page.currentPage != page.pageCount and page.currentPage == 1 %}
+        <a href="{{ path('app_type_table', {'page': page.currentPage+1}) }}">Next</a>
+    {% elseif page.currentPage == page.pageCount and page.currentPage != 1  %}
+        <a href="{{ path('app_type_table', {'page': page.currentPage-1}) }}">Previous</a>
+    {% elseif page.currentPage != page.pageCount and page.currentPage != 1 %}
+        <a href="{{ path('app_type_table', {'page': page.currentPage-1}) }}">Previous</a>
+        <a href="{{ path('app_type_table', {'page': page.currentPage+1}) }}">Next</a>
+    {% endif %}
 {% endblock %}

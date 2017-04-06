@@ -12,11 +12,11 @@ use Doctrine\ORM\EntityRepository;
  */
 class GameRepository extends EntityRepository
 {
-    public function findNextGames(){
-        $games = $this->getEntityManager()->createQuery(
-            'SELECT g FROM AppBundle:Game g WHERE g.data > CURRENT_TIMESTAMP() ORDER BY g.data ASC')
-            ->setMaxResults(12)
-            ->getResult();
-        return $games;
-    }
+//    public function findNextGames(){
+//        $games = $this->getEntityManager()->createQuery(
+//            'SELECT g FROM AppBundle:Game g WHERE g.data > CURRENT_TIMESTAMP() ORDER BY g.data ASC')
+//            ->setMaxResults(12)
+//            ->getResult();
+//        return $games;
+//    }
 }

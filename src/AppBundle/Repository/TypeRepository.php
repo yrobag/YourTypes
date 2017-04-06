@@ -21,18 +21,26 @@ class TypeRepository extends EntityRepository
         return $type;
     }
 
-    public function findPreviousTypes($user){
-        $types = $this->getEntityManager()->createQuery(
-            'SELECT t FROM AppBundle:Type t JOIN t.game g WHERE (g.data < CURRENT_TIMESTAMP() AND t.user = :user) ORDER BY g.data ASC')
-            ->setParameter('user', $user)
-            ->setMaxResults(12)
-            ->getResult();
-        return $types;
-    }
+//    public function findPreviousTypes($user){
+//        $types = $this->getEntityManager()->createQuery(
+//            'SELECT t FROM AppBundle:Type t JOIN t.game g WHERE (g.data < CURRENT_TIMESTAMP() AND t.user = :user) ORDER BY g.data ASC')
+//            ->setParameter('user', $user)
+//            ->setMaxResults(12)
+//            ->getResult();
+//        return $types;
+//    }
 
     public function findAllToTable(){
         $types = $this->getEntityManager()->createQuery(
             'SELECT t FROM AppBundle:Type t JOIN t.game g WHERE g.data < CURRENT_TIMESTAMP()')
+            ->getResult();
+        return $types;
+    }
+
+    public function findGameAllTypes($game){
+        $types = $this->getEntityManager()->createQuery(
+            'SELECT t FROM AppBundle:Type t WHERE t.game = :game')
+            ->setParameter('game', $game)
             ->getResult();
         return $types;
     }
