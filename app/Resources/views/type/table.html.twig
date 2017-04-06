@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Types list</h1>
+    {% set counter = 1 %}
+    {% for key, val in users %}
+
+        {{ counter }}. <a href="{{ path('app_type_showprevioustypes', { 'username': key}) }}">{{ key }}</a> {{ val }}
+        {% set counter = counter+1  %}
+        <br>
+    {% else %}
+        No results...
+    {% endfor %}
+{% endblock %}

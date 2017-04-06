@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Types list</h1>
+
+    {% for form in forms %}
+        {{ form_start(form.form) }}
+        {{ form.game.data|date }}
+        {{ form.game.team1 }}
+        {{ form_widget(form.form.typePointsTeam1) }}
+        {{ form_widget(form.form.typePointsTeam2) }}
+        {{ form.game.team2 }}
+        <input type="submit" value="Set"/>
+        {{ form_end(form.form) }}
+    {% else %}
+        No games to type...
+    {% endfor %}
+{% endblock %}

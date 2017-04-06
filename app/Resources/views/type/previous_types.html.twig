@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Types list</h1>
+
+    {% for type in types %}
+
+        {{ type.game.data|date }}
+        {{ type.game.team1 }}
+        {{ type.typePointsTeam1 }}
+        {{ type.typePointsTeam2 }}
+        {{ type.game.team2 }}
+        {{ type.game.pointsTeam1 }} : {{ type.game.pointsTeam2 }} Points: {{ type.points }}
+        <br>
+    {% else %}
+        No previous types
+    {% endfor %}
+{% endblock %}
