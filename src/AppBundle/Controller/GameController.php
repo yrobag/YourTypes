@@ -7,7 +7,8 @@ use Doctrine\ORM\Tools\Pagination\Paginator;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;use Symfony\Component\HttpFoundation\Request;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Game controller.
@@ -40,7 +41,16 @@ class GameController extends Controller
             ->setFirstResult(10 * ($page-1))
             ->setMaxResults(10);
 
-        return ['games' => $games, 'page'=>['currentPage'=>$page, 'pageCount'=>$pageCount]];
+        $forms = [];
+
+        foreach ($games as $key => $game) {
+
+            $form = $this->createForm("AppBundle\Form\ResultType", $game);
+            $form->get('gameId')->setData($game->getId());
+            $forms[] = ['form' => $form->createView(), 'game' => $game];
+        }
+
+        return ['forms' => $forms, 'page'=>['currentPage'=>$page, 'pageCount'=>$pageCount]];
     }
 
     /**
@@ -123,22 +133,34 @@ class GameController extends Controller
 
 
     /**
-     * @Route("/{id}/setResult")
-     * @Method({"GET", "POST"})
-     * @Template(":game:result.html.twig")
+     * @Route("/setResult")
+     * @Method("POST")
      */
-    public function setResultAction(Request $request, Game $game)
+    public function setResultAction(Request $request)
     {
-        $resultForm = $this->createForm('AppBundle\Form\ResultType', $game);
-        $resultForm->handleRequest($request);
 
-        if ($resultForm->isSubmitted() && $resultForm->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
-            $this->pointsCalculateAction($game);
-            return $this->redirectToRoute("app_game_showprevious");
+        $form = $this->createForm('AppBundle\Form\ResultType');
+        $form->handleRequest($request);
+
+
+        $game = $this->getDoctrine()->getManager()->getRepository('AppBundle:Game')->find($form->get('gameId')->getData());
+        if (!$game) {
+            throw $this->createNotFoundException('There is no game with this id');
         }
 
-        return ['game' => $game, 'form' => $resultForm->createView()];
+        $form = $this->createForm('AppBundle\Form\ResultType', $game);
+        $form->handleRequest($request);
+
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($game);
+            $em->flush();
+            $this->pointsCalculateAction($game);
+        }
+
+        return $this->redirectToRoute('app_game_showprevious');
+
     }
 
     /**

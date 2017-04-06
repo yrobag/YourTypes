@@ -5,44 +5,40 @@
 
     <table>
         <thead>
-            <tr>
-                <th>Team1</th>
-                <th>Team2</th>
-                <th>Pointsteam1</th>
-                <th>Pointsteam2</th>
-                <th>Data</th>
-                <th>Actions</th>
-            </tr>
+        <tr>
+            <th>Data</th>
+            <th>Team1 : Team2</th>
+            <th>Pointsteam1</th>
+            <th>Pointsteam2</th>
+            <th>Actions</th>
+        </tr>
         </thead>
         <tbody>
-        {% for game in games %}
+        {% for form in forms %}
             <tr>
-                <td>{{ game.team1 }}</td>
-                <td>{{ game.team2 }}</td>
-                <td>{{ game.pointsTeam1 }}</td>
-                <td>{{ game.pointsTeam2 }}</td>
-                <td>{% if game.data %}{{ game.data|date('Y-m-d H:i:s') }}{% endif %}</td>
+                <td>{% if form.game.data %}{{ form.game.data|date('Y-m-d H:i:s') }}{% endif %}</td>
                 <td>
-                    <ul>
+                    <a href="{{ path('game_edit', { 'id': form.game.id }) }}">
+                        {{ form.game.team1 }} : {{ form.game.team2 }}</a></td>
+                {{ form_start(form.form) }}
+                <td>{{ form_widget(form.form.pointsTeam1) }}</td>
+                <td>{{ form_widget(form.form.pointsTeam2) }}</td>
 
-                        <li>
-                            <a href="{{ path('app_game_setresult', { 'id': game.id }) }}">set result</a>
-                        </li>
-                        <li>
-                            <a href="{{ path('game_edit', { 'id': game.id }) }}">edit</a>
-                        </li>
-                    </ul>
+                <td>
+
+                    <input value="Set" type="submit">
+                    {{ form_end(form.form) }}
+
                 </td>
             </tr>
         {% endfor %}
-
 
 
         </tbody>
     </table>
     {% if page.currentPage != page.pageCount and page.currentPage == 1 %}
         <a href="{{ path('app_game_showprevious', {'page': page.currentPage+1}) }}">Next</a>
-    {% elseif page.currentPage == page.pageCount and page.currentPage != 1  %}
+    {% elseif page.currentPage == page.pageCount and page.currentPage != 1 %}
         <a href="{{ path('app_game_showprevious', {'page': page.currentPage-1}) }}">Previous</a>
     {% elseif page.currentPage != page.pageCount and page.currentPage != 1 %}
         <a href="{{ path('app_game_showprevious', {'page': page.currentPage-1}) }}">Previous</a>

@@ -9,9 +9,8 @@
     {{ form_end(edit_form) }}
 
     <ul>
-        <li>
-            <a href="{{ path('app_game_showall') }}">Back to the list</a>
-        </li>
+        <li><a href="{{ path('app_game_shownext') }}">Back to the next games</a></li>
+        <li><a href="{{ path('app_game_showprevious') }}">Back to the previous games</a></li>
         <li>
             {{ form_start(delete_form) }}
                 <input type="submit" value="Delete">
