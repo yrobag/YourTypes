@@ -1,48 +1,26 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>Games list</h1>
-
-    <table>
-        <thead>
-            <tr>
-                <th>Team1</th>
-                <th>Team2</th>
-                <th>Data</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
+    <h3>Games list</h3>
+    <br><a href="{{ path('app_game_new') }}">Create a new game</a><br><br>
+    <table class="table-condensed" style="width: 100%; text-align: center">
         {% for game in games %}
             <tr>
-                <td>{{ game.team1 }}</td>
-                <td>{{ game.team2 }}</td>
-                <td>{% if game.data %}{{ game.data|date('d-m-Y H:i:s') }}{% endif %}</td>
-                <td>
-                    <ul>
-
-                        <li>
-                            <a href="{{ path('game_edit', { 'id': game.id }) }}">edit</a>
-                        </li>
-                    </ul>
-                </td>
+                <td>{% if game.data %}{{ game.data|date('d.m.y H:i') }}{% endif %}</td>
+                <td><a class="toEdit" href="{{ path('game_edit', { 'id': game.id }) }}">
+                        {{ game.team1 }} - {{ game.team2 }}
+                    </a></td>
             </tr>
         {% endfor %}
-
-
-
-        </tbody>
     </table>
     {% if page.currentPage != page.pageCount and page.currentPage == 1 %}
         <a href="{{ path('app_game_shownext', {'page': page.currentPage+1}) }}">Next</a>
-    {% elseif page.currentPage == page.pageCount and page.currentPage != 1  %}
+    {% elseif page.currentPage == page.pageCount and page.currentPage != 1 %}
         <a href="{{ path('app_game_shownext', {'page': page.currentPage-1}) }}">Previous</a>
     {% elseif page.currentPage != page.pageCount and page.currentPage != 1 %}
         <a href="{{ path('app_game_shownext', {'page': page.currentPage-1}) }}">Previous</a>
         <a href="{{ path('app_game_shownext', {'page': page.currentPage+1}) }}">Next</a>
     {% endif %}
 
-
-    <br><a href="{{ path('app_game_new') }}">Create a new game</a>
 
 {% endblock %}

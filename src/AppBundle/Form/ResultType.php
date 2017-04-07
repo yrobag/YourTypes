@@ -2,6 +2,7 @@
 
 namespace AppBundle\Form;
 
+use \Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -16,8 +17,8 @@ class ResultType extends AbstractType
     {
         $builder
             ->setAction('/admin/game/setResult')
-            ->add('pointsTeam1')
-            ->add('pointsTeam2')
+            ->add('pointsTeam1', TextType::class)
+            ->add('pointsTeam2', TextType::class)
             ->add('gameId', HiddenType::class, [
                 'mapped'=>false
             ]);;

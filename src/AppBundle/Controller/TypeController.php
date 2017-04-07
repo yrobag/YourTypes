@@ -23,6 +23,10 @@ class TypeController extends Controller
      */
     public function myTypesAction($page)
     {
+
+        if($this->getUser() == null) {
+            return $this->redirectToRoute('fos_user_security_login');
+        }
         $dql = 'SELECT g FROM AppBundle:Game g WHERE g.data > CURRENT_TIMESTAMP() ORDER BY g.data ASC';
         $query = $this->getDoctrine()->getEntityManager()->createQuery($dql);
         $games = new Paginator($query);
@@ -115,7 +119,7 @@ class TypeController extends Controller
 
 
         $dql = 'SELECT t FROM AppBundle:Type t JOIN t.game g 
-                WHERE (g.data < CURRENT_TIMESTAMP() AND t.user = :user) ORDER BY g.data ASC';
+                WHERE (g.data < CURRENT_TIMESTAMP() AND t.user = :user) ORDER BY g.data DESC';
         $query = $this->getDoctrine()->getEntityManager()
             ->createQuery($dql)
             ->setParameter('user', $user);

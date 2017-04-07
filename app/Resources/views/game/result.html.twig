@@ -1,14 +1,14 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>Game result</h1>
+    <h3>Game result</h3>
 
     {{ form_start(form) }}
     {{ game.team1 }}
     {{ form_widget(form.pointsTeam1) }}
     {{ form_widget(form.pointsTeam2) }}
     {{ game.team2 }}
-    <input type="submit" value="Set"/>
+    <input type="submit" value="Set" style="color: #000000;"/>
     {{ form_end(form) }}
 
     <a href="{{ path('app_game_showall') }}">Back to the list</a>

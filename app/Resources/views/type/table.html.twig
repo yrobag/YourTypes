@@ -1,20 +1,32 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>Types list</h1>
+    <h3>Best Users</h3>
     {% set counter = offset+1 %}
-    {% for key, val in users %}
+    <table class="table-condensed" style="width: 100%; text-align: center">
 
-        {{ counter }}. <a href="{{ path('app_type_previoustypes', { 'username': key}) }}">{{ key }}</a> {{ val }}
-        {% set counter = counter+1  %}
-        <br>
-    {% else %}
-        No results...
-    {% endfor %}
+        {% for key, val in users %}
+            {% if counter % 2 ==0 %}
+                {% set class = 'evenRow' %}
+            {% else %}
+                {% set class = 'oddRow' %}
+            {% endif %}
+            <tr class="{{ class }}">
+                <td style="width: 10%">{{ counter }}.</td>
+                <td style="width: 75%; text-align: left"><a href="{{ path('app_type_previoustypes', { 'username': key}) }}">{{ key }}</a></td>
+                <td style="width: 15%">{{ val }}</td>
+            </tr>
+            {% set counter = counter+1 %}
+        {% else %}
+            <tr>
+                <td colspan="3">No results...</td>
+            </tr>
+        {% endfor %}
+    </table>
 
     {% if page.currentPage != page.pageCount and page.currentPage == 1 %}
         <a href="{{ path('app_type_table', {'page': page.currentPage+1}) }}">Next</a>
-    {% elseif page.currentPage == page.pageCount and page.currentPage != 1  %}
+    {% elseif page.currentPage == page.pageCount and page.currentPage != 1 %}
         <a href="{{ path('app_type_table', {'page': page.currentPage-1}) }}">Previous</a>
     {% elseif page.currentPage != page.pageCount and page.currentPage != 1 %}
         <a href="{{ path('app_type_table', {'page': page.currentPage-1}) }}">Previous</a>

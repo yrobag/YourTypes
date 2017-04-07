@@ -1,13 +1,47 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8" />
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        {% block stylesheets %}{% endblock %}
-        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
-    </head>
-    <body>
+<head>
+    <meta charset="UTF-8"/>
+    <title>{% block title %}Welcome!{% endblock %}</title>
+    {% block stylesheets %}{% endblock %}
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}"/>
+</head>
+<body style="background-color: #868686; color: #DDDDDD">
+<nav class="navbar navbar-inverse" style="margin-bottom: 0">
+
+    <div class="container-fluid" style="margin-left: 25%">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="{{ path('app_type_mytypes') }}">YourTypes</a>
+        </div>
+        <ul class="nav navbar-nav">
+            {% if is_granted('ROLE_USER') %}
+                <li><a href="{{ path('app_type_previoustypes') }}">Previous types</a></li>
+                <li><a href="{{ path('app_type_table') }}">Table</a></li>
+                <li><a href="{{ path('fos_user_security_logout') }}">Logout</a></li>
+            {% else %}
+                <li><a href="{{ path('fos_user_security_login') }}">Login</a></li>
+                <li><a href="{{ path('fos_user_registration_register') }}">Register</a></li>
+            {% endif %}
+        </ul>
+        {% if is_granted('ROLE_ADMIN') %}
+            <ul class="nav navbar-nav">
+                <li><a href="{{ path('app_game_shownext') }}">Next games </a></li>
+                <li><a href="{{ path('app_game_showprevious') }}">Set results </a></li>
+            </ul>
+        {% endif %}
+
+    </div>
+
+</nav>
+<div class="container" style="width: 50%; margin-right: auto; margin-left: auto">
+    <div class="jumbotron pagination-center" style="background-color: #666666;">
         {% block body %}{% endblock %}
-        {% block javascripts %}{% endblock %}
-    </body>
+    </div>
+</div>
+{% block javascripts %}{% endblock %}
+
+</body>
 </html>

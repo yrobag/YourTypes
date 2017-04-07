@@ -1,20 +1,19 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>Game edit</h1>
+    <h3>Game edit</h3>
 
     {{ form_start(edit_form) }}
-        {{ form_widget(edit_form) }}
-        <input type="submit" value="Edit" />
+        {{ form_widget(edit_form, { 'attr': {'style':  'color: black;'}}) }}
+        <input style="color: black" type="submit" value="Edit" />
     {{ form_end(edit_form) }}
 
-    <ul>
-        <li><a href="{{ path('app_game_shownext') }}">Back to the next games</a></li>
-        <li><a href="{{ path('app_game_showprevious') }}">Back to the previous games</a></li>
-        <li>
+
+        <a class="toEdit" href="{{ path('app_game_shownext') }}">Back to the next games</a><br>
+        <a class="toEdit" href="{{ path('app_game_showprevious') }}">Back to the previous games</a>
+
             {{ form_start(delete_form) }}
-                <input type="submit" value="Delete">
+                <input class="toDelete" type="submit" value="Delete">
             {{ form_end(delete_form) }}
-        </li>
-    </ul>
+
 {% endblock %}

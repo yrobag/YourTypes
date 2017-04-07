@@ -1,20 +1,29 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>Types list</h1>
+    <h3>Previous {{ user.username }} types</h3>
+    <table class="table-condensed" style="width: 100%; text-align: center">
+        <tr>
+            <th colspan="4">Match</th>
+            <th>My type</th>
+            <th>Points</th>
+        </tr>
 
     {% for type in types %}
+    <tr>
+        <td>{{ type.game.data|date('d.m.y H:i')  }}</td>
+        <td style="text-align: right">{{ type.game.team1 }}</td>
+        <td>{{ type.game.pointsTeam1 }} : {{ type.game.pointsTeam2 }}</td>
+        <td style="text-align: left">{{ type.game.team2 }}</td>
+        <td>{{ type.typePointsTeam1 }} : {{ type.typePointsTeam2 }}</td>
 
-        {{ type.game.data|date }}
-        {{ type.game.team1 }}
-        {{ type.typePointsTeam1 }}
-        {{ type.typePointsTeam2 }}
-        {{ type.game.team2 }}
-        {{ type.game.pointsTeam1 }} : {{ type.game.pointsTeam2 }} Points: {{ type.points }}
-        <br>
+        {% if type.points == 3 %}{% set class = 'threePoints' %} {% elseif type.points == 1 %}{% set class = 'onePoint' %} {% else %} {% set class = 'noPoints' %}{% endif %}
+        <td class="{{ class }}">{{ type.points }}</td>
+    </tr>
     {% else %}
         No previous types
     {% endfor %}
+    </table>
     {% if page.currentPage != page.pageCount and page.currentPage == 1 %}
         <a href="{{ path('app_type_previoustypes', {'username': user.username})}}?page={{ page.currentPage+1 }}">Next</a>
     {% elseif page.currentPage == page.pageCount and page.currentPage != 1 %}

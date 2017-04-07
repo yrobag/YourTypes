@@ -1,0 +1,40 @@
+.evenRow{
+    background-color: #424242;
+    color: #C4C4C4;
+}
+
+.oddRow{
+    color: #424242;
+    background-color: #C4C4C4;
+}
+
+.jumbotron tr a{
+    font-weight: bold;
+}
+
+.jumbotron > a{
+    color: #FFFFFF;
+    font-weight: 900;
+    text-decoration: underline;
+}
+
+.threePoints{
+    color: #6b9311;
+    font-weight: bolder;
+}
+
+.noPoints{
+    color: #A0A0A0;
+}
+
+.toEdit{
+    font-weight: bold;
+    color: #D3D3D3;
+}
+
+.toDelete{
+    background-color: #AA3333;
+    color: #313131;
+    border: black 1px solid;
+
+}

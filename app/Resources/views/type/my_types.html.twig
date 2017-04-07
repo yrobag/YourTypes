@@ -1,20 +1,27 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>Types list</h1>
+    <h3>Next games</h3>
 
-    {% for form in forms %}
-        {{ form_start(form.form) }}
-        {{ form.game.data|date }}
-        {{ form.game.team1 }}
-        {{ form_widget(form.form.typePointsTeam1) }}
-        {{ form_widget(form.form.typePointsTeam2) }}
-        {{ form.game.team2 }}
-        <input type="submit" value="Set"/>
-        {{ form_end(form.form) }}
-    {% else %}
-        No games to type...
-    {% endfor %}
+    <table class="table-condensed" style="width: 100%; text-align: center">
+        {% for form in forms %}
+            <tr>
+
+                <td>{{ form.game.data|date('d.m.y H:i') }}</td>
+                <td style="text-align: right">{{ form.game.team1 }}</td>
+                <td>
+                    {{ form_start(form.form, { 'attr': {'id': 'myForm'}}) }}
+                    {{ form_widget(form.form.typePointsTeam1, { 'attr': {'class': 'myInput1', 'style': 'width: 35px; text-align: center; color: black;'}}) }}
+                    {{ form_widget(form.form.typePointsTeam2, { 'attr': {'class': 'myInput2', 'style': 'width: 35px; text-align: center;  color: black;'}}) }}
+                    <input type="submit" value="Set" hidden/>
+                    {{ form_end(form.form) }}
+                </td>
+                <td style="text-align: left">{{ form.game.team2 }}</td>
+            </tr>
+        {% else %}
+            No games to type...
+        {% endfor %}
+    </table>
     {% if page.currentPage != page.pageCount and page.currentPage == 1 %}
         <a href="{{ path('app_type_mytypes', {'page': page.currentPage+1}) }}">Next</a>
     {% elseif page.currentPage == page.pageCount %}
@@ -24,4 +31,8 @@
         <a href="{{ path('app_type_mytypes', {'page': page.currentPage+1}) }}">Next</a>
     {% endif %}
 
+{% endblock %}
+{% block javascripts %}
+    <script src="{{ asset('js/jquery.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('js/app.js') }}" type="text/javascript"></script>
 {% endblock %}
