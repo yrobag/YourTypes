@@ -1,16 +1,12 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>Game creation</h1>
+    <h3>Game creation</h3>
 
-    {{ form_start(form) }}
+    {{ form_start(form , { 'attr': {'style':  'color: black;'}}) }}
         {{ form_widget(form) }}
         <input type="submit" value="Create" />
     {{ form_end(form) }}
 
-    <ul>
-        <li>
-            <a href="{{ path('app_game_showall') }}">Back to the list</a>
-        </li>
-    </ul>
+        <br><a class="toEdit" href="{{ path('app_game_shownext') }}">Back to the list</a>
 {% endblock %}
