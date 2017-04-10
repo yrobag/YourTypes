@@ -12,32 +12,36 @@
 <body style="background-color: #868686; color: #DDDDDD">
 <nav class="navbar navbar-inverse" style="margin-bottom: 0">
 
-    <div class="container-fluid" style="margin-left: 25%">
+    <div class="container-fluid">
         <div class="navbar-header">
             <a class="navbar-brand" href="{{ path('app_type_mytypes') }}">YourTypes</a>
         </div>
         <ul class="nav navbar-nav">
             {% if is_granted('ROLE_USER') %}
                 <li><a href="{{ path('app_type_previoustypes') }}">Previous types</a></li>
-                <li><a href="{{ path('app_type_table') }}">Table</a></li>
-                <li><a href="{{ path('fos_user_security_logout') }}">Logout</a></li>
-            {% else %}
-                <li><a href="{{ path('app_type_table') }}">Table</a></li>
-                <li><a href="{{ path('fos_user_security_login') }}">Login</a></li>
-                <li><a href="{{ path('fos_user_registration_register') }}">Register</a></li>
             {% endif %}
+            <li><a href="{{ path('app_type_table') }}">Table</a></li>
         </ul>
         {% if is_granted('ROLE_ADMIN') %}
             <ul class="nav navbar-nav">
                 <li><a href="{{ path('app_game_shownext') }}">Next games </a></li>
                 <li><a href="{{ path('app_game_showprevious') }}">Set results </a></li>
+                <li><a href="{{ path('app_game_fixtures') }}">Create games from API </a></li>
             </ul>
         {% endif %}
+        <ul class="nav navbar-nav" style="float: right;">
+            {% if is_granted('ROLE_USER') %}
+                <li><a href="{{ path('fos_user_security_logout') }}"><span class="glyphicon glyphicon-off"></span> Logout</a></li>
+            {% else %}
+                <li><a href="{{ path('fos_user_security_login') }}"><span class="glyphicon glyphicon-user"></span> Login</a></li>
+                <li><a href="{{ path('fos_user_registration_register') }}"><span class="glyphicon glyphicon-pencil"></span> Register</a></li>
+            {% endif %}
+        </ul>
 
     </div>
 
 </nav>
-<div class="container" style="width: 600px; margin-right: auto; margin-left: auto">
+<div class="container" style="width: 60%; margin-right: auto; margin-left: auto">
     <div class="jumbotron pagination-center" style="background-color: #666666;">
         {% block body %}{% endblock %}
     </div>

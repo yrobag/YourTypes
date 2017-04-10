@@ -9,7 +9,7 @@
 
                 <td>{{ form.game.data|date('d.m.y H:i') }}</td>
                 <td style="text-align: right">{{ form.game.team1 }}</td>
-                <td>
+                <td style="width: 100px">
                     {{ form_start(form.form, { 'attr': {'id': 'myForm'}}) }}
                     {{ form_widget(form.form.typePointsTeam1, { 'attr': {'class': 'myInput1', 'style': 'width: 35px; text-align: center; color: black;'}}) }}
                     {{ form_widget(form.form.typePointsTeam2, { 'attr': {'class': 'myInput2', 'style': 'width: 35px; text-align: center;  color: black;'}}) }}

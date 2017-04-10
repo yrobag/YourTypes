@@ -9,6 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Game controller.
@@ -182,6 +183,57 @@ class GameController extends Controller
 
         return $this->redirectToRoute('app_game_shownext');
     }
+
+
+
+    /**
+     * @Route("/fixtures")
+     * @Template(":type:fixtures.html.twig")
+     */
+    public function fixturesAction()
+    {
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_URL, 'http://api.football-data.org/v1/fixtures');
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        $json = curl_exec($curl);
+        $fixtures=json_decode($json)->fixtures;
+
+        return ['fixtures' => $fixtures];
+    }
+
+    /**
+     * @Route("/fixtures/add")
+     * @Method("POST")
+     */
+    public function addFromApiAction(Request $request)
+    {
+        $games = $request->request->get('games');
+
+        $em = $this->getDoctrine()->getManager();
+
+        foreach ($games as $game){
+            $gameArray = explode('#', $game);
+            $newGame = new Game();
+            $date = new \DateTime($gameArray[0]);
+            $newGame->setData($date);
+            $newGame->setTeam1($gameArray[1]);
+            $newGame->setTeam2($gameArray[2]);
+            $em->persist($newGame);
+        }
+//        return new Response(var_dump($newGame));
+        $em->flush();
+
+        return $this->redirectToRoute('app_game_shownext');
+    }
+
+
+
+
+
+
+
+
+
 
     /**
      * Creates a form to delete a game entity.

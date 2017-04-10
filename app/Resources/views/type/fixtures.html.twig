@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h3>Fixtures</h3>
+    <form method="post" action="{{ path('app_game_addfromapi') }}">
+        <input type="submit" value="Add games" style="color: black;"><br>
+    {% for game in fixtures %}
+        <input type="checkbox" name="games[]" value="
+{{ game.date|date('Y-m-d H:i:s') }}#{{ game.homeTeamName }}#{{ game.awayTeamName }}">
+    {{ game.date|date('d.m.y H:i') }} &nbsp; {{ game.homeTeamName }} &nbsp; - &nbsp; {{ game.awayTeamName }} <br>
+    {% else %}
+    <i>There is a problem with API...</i>
+    {% endfor %}
+    </form>
+{% endblock %}
